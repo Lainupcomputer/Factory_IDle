@@ -1,0 +1,12 @@
+{
+  "player": {
+    "money": 461920.412999953,
+    "gems": 10
+  },
+  "worker": {
+    "worker": 590,
+    "worker_lvl": 136,
+    "worker_earnings": 666549.5800000436,
+    "next_worker_price": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "default": {
+    "user_profile": "default",
+    "resolution_x": 1280,
+    "resolution_y": 800,
+    "dynamic_market": true,
+    "auto_save": true,
+    "auto_save_duration": 180,
+    "sound_enable": false,
+    "sound_volume": 0,
+    "bgm_enable": false,
+    "bgm_volume": 0
+  }
+}
