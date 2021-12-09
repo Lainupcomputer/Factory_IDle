@@ -135,7 +135,7 @@ def options_menu():
 def show_stats():
     # TODO Rework
     # savegame.check_savegame()  # Get Savegame
-    # time_played = savegame.get("time_played")
+
     # total_starts = savegame.get("total_starts")
     # total_balance = savegame.get("total_balance")
     # money_spend = savegame.get("money_spend")
