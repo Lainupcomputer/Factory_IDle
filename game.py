@@ -5,7 +5,7 @@ from pygame.locals import *
 from Resources.Player import Player
 from Resources import screen_objects as sobj
 from Resources.screen_objects import LPanel, RPanel
-from Resources.entitys import worker
+from Resources.entitys import worker, opt
 from Resources.entitys import Player as P
 
 # Debug Functions
@@ -19,7 +19,7 @@ print(f"Debug Mode: {debug}")
 from Resources.ez_config import ez_config
 cfg = ez_config()
 cfg.initialise("save", debug=True)
-cfg.add("player", "name#game_time")
+#cfg.add("player", "name#game_time")
 
 
 def quit_game():
@@ -102,7 +102,7 @@ def main_menu():
                 show_stats()  # show stats
         if settings_btn.collidepoint((mx, my)):
             if left_click:
-                show_options()  # show settings
+                options_menu()  # show settings
         if exit_btn.collidepoint((mx, my)):
             if left_click:
                 quit_game()
@@ -124,12 +124,84 @@ def main_menu():
 
 
 def options_menu():
+    scroll_pos = [0, 0]
+    scroll_speed = 10  # TODO add scroll speed to options
     click_left = False
-    asset = "Resources/Asset/options_bg.png"
+    click_right = False
+    asset = "Resources/Asset/options_bg_new.png"
+    asset_ok = "Resources/Asset/buttons/ok_btn.png"
+    asset_abort = "Resources/Asset/buttons/abort_btn.png"
+
     while True:
         mx, my = pygame.mouse.get_pos()  # track mouse position
+        mouse = pygame.mouse.get_pos()
         screen.fill((0, 0, 0))
         screen.blit(pygame.image.load(asset), (0, 0))  # background image
+
+        bgm = opt()  # background Music Toggle
+        bgm.name = "bgm"
+        bgm.button(screen, mouse)
+        if bgm.hover:
+            if click_left:
+                bgm.toggle()
+                if debug:
+                    print("bgm_toggle pressed")
+
+        eff = opt()  # Sound Effects Toggle
+        eff.name = "eff"
+        eff.position_y += 40
+        eff.button(screen, mouse)
+        if eff.hover:
+            if click_left:
+                eff.toggle()
+                if debug:
+                    print("eff_toggle pressed")
+
+
+
+
+        buy_worker_btn = pygame.Rect(501, 650, 210, 55)
+        pygame.draw.rect(screen, (255, 0, 0), buy_worker_btn)
+        if buy_worker_btn.collidepoint((mx, my)):
+            if click_left:
+
+                print("click")
+
+        # Event handler
+        click_left = False
+        click_right = False
+
+        scroll_area = pygame.Rect(50, 50, 500, 700)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                Spieler.save_game()
+                quit_no_save()
+
+            if event.type == KEYDOWN:  # ESC -> Ingame Menu
+                if event.key == K_ESCAPE:
+                    ingame_menu()
+
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left click
+                    click_left = True
+
+                if event.button == 3:  # Right Click
+                    click_right = True
+
+                if event.button == 4:  # Scroll down
+                    if scroll_area.collidepoint((mx, my)):
+                        scroll_pos[1] -= scroll_speed
+
+                if event.button == 5:  # Scroll up
+                    if scroll_area.collidepoint((mx, my)):
+                        scroll_pos[1] += scroll_speed
+
+        print(scroll_pos)
+        # pygame.draw.rect(screen, (255, 0, 0), scroll_area)  # Show on screen DEBUG
+        pygame.display.update()
+        mainClock.tick(5)
+
 
 
 def show_stats():
@@ -185,7 +257,15 @@ def show_options():
                 if event.key == K_ESCAPE:
                     menu()
         pygame.display.update()
-        mainClock.tick(60)
+        mainClock.tick(30)
+
+
+
+
+
+
+
+
 
 
 def game():
