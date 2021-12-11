@@ -1,0 +1,8 @@
+{
+  "OPTIONS": {
+    "bgm": true,
+    "eff": true,
+    "volume": 50,
+    "scroll_speed": 10
+  }
+}

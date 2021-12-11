@@ -12,6 +12,9 @@ from Resources.entitys import Player as P
 debug = False
 if "-debug" in sys.argv:
     debug = True
+if "-init" in sys.argv:
+    pass
+
 print(f"Debug Mode: {debug}")
 
 # configuration
@@ -32,15 +35,23 @@ mainClock = pygame.time.Clock()
 pygame.init()
 pygame.display.set_caption("Factory Idle")
 screen = pygame.display.set_mode((1280, 800), 0, 32)
-font = pygame.font.SysFont(None, 20)
+#font = pygame.font.SysFont(None, 20)
 
 
 def load_game():  # Loading Screen
+    from Resources.Asset.animation.animation import startup_animation
+    frame = 0
+    if debug:
+        frame = 6
     while True:
         screen.fill((155, 0, 0))
+        frame += 1
+        if frame > 6:
+            main_menu()
+        screen.blit(startup_animation[frame], (0, 0))
         pygame.display.update()
-        time.sleep(2)
-        main_menu()
+        time.sleep(0.5)
+
 
 
 # Import Classes
@@ -71,7 +82,7 @@ def main_menu():
     user_profile = cfg.get("player", "name")  # Get Username from CFG
 
     while True:
-        mx, my = pygame.mouse.get_pos()  # track mouse position
+        mouse = pygame.mouse.get_pos()  # track mouse position
         screen.fill((0, 0, 0))
         screen.blit(pygame.image.load(asset), (0, 0))  # background image
 
@@ -94,16 +105,16 @@ def main_menu():
             sobj.draw_text("Start", (0, 0, 0), 501, 350, screen)
 
         # Handle Button Press
-        if game_btn.collidepoint((mx, my)):
+        if game_btn.collidepoint(mouse):
             if left_click:
                 game()  # start game
-        if stats_btn.collidepoint((mx, my)):
+        if stats_btn.collidepoint(mouse):
             if left_click:
                 show_stats()  # show stats
-        if settings_btn.collidepoint((mx, my)):
+        if settings_btn.collidepoint(mouse):
             if left_click:
                 options_menu()  # show settings
-        if exit_btn.collidepoint((mx, my)):
+        if exit_btn.collidepoint(mouse):
             if left_click:
                 quit_game()
         left_click = False
@@ -124,20 +135,25 @@ def main_menu():
 
 
 def options_menu():
+    from Resources.Asset.animation.animation import options_animation  # load Animation
+    asset = "Resources/Asset/options_bg_new.png"  # Load Background Asset
+    # Set Variables
+    frame = 0
     scroll_pos = [0, 0]
-    scroll_speed = 10  # TODO add scroll speed to options
+    scroll_speed = cfg.get("OPTIONS", "scroll_speed")
     click_left = False
-    click_right = False
-    asset = "Resources/Asset/options_bg_new.png"
-    asset_ok = "Resources/Asset/buttons/ok_btn.png"
-    asset_abort = "Resources/Asset/buttons/abort_btn.png"
-
+    # LOOP
     while True:
-        mx, my = pygame.mouse.get_pos()  # track mouse position
-        mouse = pygame.mouse.get_pos()
-        screen.fill((0, 0, 0))
-        screen.blit(pygame.image.load(asset), (0, 0))  # background image
+        mouse = pygame.mouse.get_pos()  # Track Mouse
+        screen.fill((0, 0, 0))  # Fill Black
+        screen.blit(pygame.image.load(asset), (0, 0))  # blit Background
+        screen.blit(options_animation[frame], (0, 0))  # blit animation
 
+        frame += 1  # Loop Animation
+        if frame > 2:
+            frame = 0
+
+        # Options #
         bgm = opt()  # background Music Toggle
         bgm.name = "bgm"
         bgm.button(screen, mouse)
@@ -149,73 +165,55 @@ def options_menu():
 
         eff = opt()  # Sound Effects Toggle
         eff.name = "eff"
-        eff.position_y += 40
+        eff.position_y += 60
         eff.button(screen, mouse)
         if eff.hover:
             if click_left:
                 eff.toggle()
                 if debug:
                     print("eff_toggle pressed")
-
-
-
-
-        buy_worker_btn = pygame.Rect(501, 650, 210, 55)
-        pygame.draw.rect(screen, (255, 0, 0), buy_worker_btn)
-        if buy_worker_btn.collidepoint((mx, my)):
+        # Back Button
+        back_btn = pygame.Rect(screen.blit(pygame.image.load("Resources/Asset/buttons/back_btn.png"), (120, 650)))
+        # pygame.draw.rect(screen, (255, 0, 0), back_btn)
+        if back_btn.collidepoint(mouse):
             if click_left:
-
-                print("click")
+                main_menu()
 
         # Event handler
         click_left = False
-        click_right = False
-
         scroll_area = pygame.Rect(50, 50, 500, 700)
+        # pygame.draw.rect(screen, (255, 0, 0), scroll_area)
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 Spieler.save_game()
                 quit_no_save()
 
-            if event.type == KEYDOWN:  # ESC -> Ingame Menu
+            if event.type == KEYDOWN:  # ESC -> Main Menu
                 if event.key == K_ESCAPE:
-                    ingame_menu()
+                    main_menu()
 
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left click
                     click_left = True
 
-                if event.button == 3:  # Right Click
-                    click_right = True
-
                 if event.button == 4:  # Scroll down
-                    if scroll_area.collidepoint((mx, my)):
+                    if scroll_area.collidepoint(mouse):
                         scroll_pos[1] -= scroll_speed
 
                 if event.button == 5:  # Scroll up
-                    if scroll_area.collidepoint((mx, my)):
+                    if scroll_area.collidepoint(mouse):
                         scroll_pos[1] += scroll_speed
 
-        print(scroll_pos)
-        # pygame.draw.rect(screen, (255, 0, 0), scroll_area)  # Show on screen DEBUG
         pygame.display.update()
         mainClock.tick(5)
 
 
 
+
+
 def show_stats():
     # TODO Rework
-    # savegame.check_savegame()  # Get Savegame
-
-    # total_starts = savegame.get("total_starts")
-    # total_balance = savegame.get("total_balance")
-    # money_spend = savegame.get("money_spend")
-    # money_received = savegame.get("money_received")
-    # total_resets = savegame.get("total_resets")
-    # total_workers = savegame.get("total_workers")
-    # total_mechanics = savegame.get("total_mechanics")
-    # total_vehicles = savegame.get("total_vehicles")
 
     while True:
         screen.fill((0, 0, 0))
@@ -242,22 +240,6 @@ def show_stats():
         mainClock.tick(60)
 
 
-def show_options():
-    #  TODO load options
-    while True:
-        screen.fill((0, 0, 0))
-        # background image
-        screen.blit(pygame.image.load("Resources/Asset/options_bg.png"), (0, 0))
-        # TODO add input for username
-
-        for event in pygame.event.get():  # Event handler
-            if event.type == QUIT:
-                quit_no_save()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    menu()
-        pygame.display.update()
-        mainClock.tick(30)
 
 
 
@@ -270,7 +252,7 @@ def show_options():
 
 def game():
     scroll_pos = [0, 0]
-    scroll_speed = 10  # TODO add scroll speed to options
+    scroll_speed = cfg.get("OPTIONS", "scroll_speed")
     click_left = False
     click_right = False
 
