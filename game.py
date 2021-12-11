@@ -21,7 +21,7 @@ print(f"Debug Mode: {debug}")
 
 from Resources.ez_config import ez_config
 cfg = ez_config()
-cfg.initialise("save", debug=True)
+cfg.initialise("options.txt", debug=True)
 #cfg.add("player", "name#game_time")
 
 
@@ -142,6 +142,7 @@ def options_menu():
     scroll_pos = [0, 0]
     scroll_speed = cfg.get("OPTIONS", "scroll_speed")
     click_left = False
+    print(scroll_speed)
     # LOOP
     while True:
         mouse = pygame.mouse.get_pos()  # Track Mouse
