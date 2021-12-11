@@ -11,3 +11,7 @@ startup_animation = [pygame.image.load("Resources/Asset/animation/startup/p0.png
 options_animation = [pygame.image.load("Resources/Asset/animation/options_menu/a1.png"),
                      pygame.image.load("Resources/Asset/animation/options_menu/a2.png"),
                      pygame.image.load("Resources/Asset/animation/options_menu/a3.png")]
+
+bar_animation = [pygame.image.load("Resources/Asset/animation/options_menu/a1.png"),
+                 pygame.image.load("Resources/Asset/animation/options_menu/a2.png"),
+                 pygame.image.load("Resources/Asset/animation/options_menu/a3.png")]

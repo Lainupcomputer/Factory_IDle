@@ -172,6 +172,17 @@ def options_menu():
                 eff.toggle()
                 if debug:
                     print("eff_toggle pressed")
+
+        volume = opt()
+        volume.name = "volume"
+        volume.bar(screen, mouse)
+        volume.position_y += 200
+        if volume.hover:
+            volume.bar_value = scroll_pos[1]
+            print(volume.bar_value)
+
+
+
         # Back Button
         back_btn = pygame.Rect(screen.blit(pygame.image.load("Resources/Asset/buttons/back_btn.png"), (120, 650)))
         # pygame.draw.rect(screen, (255, 0, 0), back_btn)
@@ -280,6 +291,8 @@ def game():
         fabric = LPanel()
         fabric.y_offset = 110
         fabric.show(screen, scroll_pos)
+
+
 
 
         #sobj.render_worker(screen, Spieler, scroll_pos)

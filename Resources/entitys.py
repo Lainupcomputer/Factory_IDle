@@ -99,6 +99,9 @@ class opt:
     status = False
     debug = False
     static_cfg = "OPTIONS"
+    # bar
+    bar_value = 0
+    area = ""
 
     def data(self):
         self.status = cfg.get(self.static_cfg, self.name)
@@ -120,6 +123,7 @@ class opt:
 
         if self.debug:
             pygame.draw.rect(screen, (0, 155, 0), opt_btn)  # Draw if debug
+        # TODO REFACTOR TOGGLE btn.toggle
 
     def toggle(self):
         if self.status:
@@ -129,3 +133,14 @@ class opt:
         if not self.status:
             status = True
             cfg.edit(self.static_cfg, self.name, status)  # Save cfg
+
+    def bar(self, screen, mouse):
+        from Resources.Asset.animation.animation import bar_animation
+        self.data()
+
+        screen.blit((bar_animation[self.bar_value]), (self.position_x, self.position_y))
+
+        self.area = pygame.Rect(self.position_x, self.position_y, self.dimension, self.dimension)  # set Bar
+
+        if self.area.collidepoint((mouse[0], mouse[1])):  # Check if mouse hover
+            self.hover = True
