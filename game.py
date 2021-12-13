@@ -8,6 +8,9 @@ from Resources.screen_objects import LPanel, RPanel
 from Resources.entitys import worker, opt
 from Resources.entitys import Player as P
 
+# Asset Loader
+from Resources.Asset.asset_loader import main_menu_bg, main_options_bg, main_stats_bg
+
 # Debug Functions
 debug = False
 if "-debug" in sys.argv:
@@ -78,13 +81,12 @@ def quit_save():
 
 def main_menu():
     left_click = False
-    asset = "Resources/Asset/menu_bg.png"
     user_profile = cfg.get("player", "name")  # Get Username from CFG
 
     while True:
         mouse = pygame.mouse.get_pos()  # track mouse position
         screen.fill((0, 0, 0))
-        screen.blit(pygame.image.load(asset), (0, 0))  # background image
+        screen.blit(main_menu_bg, (0, 0))
 
         # Menu Buttons
         game_btn = pygame.Rect(501, 350, 210, 55)
@@ -136,10 +138,10 @@ def main_menu():
 
 def options_menu():
     from Resources.Asset.animation.animation import options_animation  # load Animation
-    asset = "Resources/Asset/options_bg_new.png"  # Load Background Asset
     # Set Variables
     frame = 0
     scroll_pos = [0, 0]
+    secundary_scroll_pos = [0, 0]
     scroll_speed = cfg.get("OPTIONS", "scroll_speed")
     click_left = False
     print(scroll_speed)
@@ -147,7 +149,7 @@ def options_menu():
     while True:
         mouse = pygame.mouse.get_pos()  # Track Mouse
         screen.fill((0, 0, 0))  # Fill Black
-        screen.blit(pygame.image.load(asset), (0, 0))  # blit Background
+        screen.blit(main_options_bg, (0, 0))  # blit Background
         screen.blit(options_animation[frame], (0, 0))  # blit animation
 
         frame += 1  # Loop Animation
@@ -174,13 +176,40 @@ def options_menu():
                 if debug:
                     print("eff_toggle pressed")
 
+        animation = opt()
+        animation.name = "animation"
+        animation.position_y += 220
+        animation.button(screen, mouse)
+        if animation.hover:
+            if click_left:
+                animation.toggle()
+                if debug:
+                    print("animation toggled")
+
         volume = opt()
+        volume.position_x = 340
+        volume.position_y = 250
+        volume.dimension = 20
         volume.name = "volume"
+        volume.bar_value = cfg.get("OPTIONS", "volume")
         volume.bar(screen, mouse)
-        volume.position_y += 200
+
         if volume.hover:
-            volume.bar_value = scroll_pos[1]
-            print(volume.bar_value)
+
+            new_value = secundary_scroll_pos[1]
+
+            if new_value >= 9:
+                new_value = 9
+                secundary_scroll_pos[1] = 9
+            if new_value <= 0:
+                new_value = 0
+                secundary_scroll_pos[1] = 0
+
+            volume.bar_value += new_value
+            cfg.edit("OPTIONS", "volume", new_value)
+
+            if debug:
+                print(new_value)
 
 
 
@@ -210,10 +239,12 @@ def options_menu():
                     click_left = True
 
                 if event.button == 4:  # Scroll down
+                    secundary_scroll_pos[1] -= 1
                     if scroll_area.collidepoint(mouse):
                         scroll_pos[1] -= scroll_speed
 
                 if event.button == 5:  # Scroll up
+                    secundary_scroll_pos[1] += 1
                     if scroll_area.collidepoint(mouse):
                         scroll_pos[1] += scroll_speed
 
@@ -271,7 +302,7 @@ def game():
     while True:
         mx, my = pygame.mouse.get_pos()  # track mouse position
         screen.fill((0, 0, 0))
-        screen.blit(pygame.image.load("Resources/Asset/game_bg.png"), (0, 0))  # Load Game Background
+        screen.blit(main_menu_bg, (0, 0))  # Load Game Background
 
         player_panel = RPanel()  # Right Top Panel
         player_panel.show(screen, Spieler)
