@@ -2,7 +2,8 @@
   "OPTIONS": {
     "bgm": false,
     "eff": false,
-    "volume": 50,
-    "scroll_speed": 10
+    "volume": 7,
+    "scroll_speed": 10,
+    "animation": false
   }
 }
