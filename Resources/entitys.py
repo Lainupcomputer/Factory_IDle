@@ -100,12 +100,12 @@ class opt:
     debug = False
     static_cfg = "OPTIONS"
     # bar
-    bar_value = 0
+    bar_value = 1
     area = ""
+    bar_width = 100
 
     def data(self):
         self.status = cfg.get(self.static_cfg, self.name)
-        print("call")
 
     def button(self, screen, mouse):
         self.data()
@@ -138,9 +138,11 @@ class opt:
         from Resources.Asset.animation.animation import bar_animation
         self.data()
 
+
         screen.blit((bar_animation[self.bar_value]), (self.position_x, self.position_y))
 
-        self.area = pygame.Rect(self.position_x, self.position_y, self.dimension, self.dimension)  # set Bar
+        self.area = pygame.Rect(self.position_x, self.position_y, self.bar_width, self.dimension)  # set Bar
+       # pygame.draw.rect(screen, (0, 155, 0), self.area)  # Draw if debug
 
         if self.area.collidepoint((mouse[0], mouse[1])):  # Check if mouse hover
             self.hover = True
