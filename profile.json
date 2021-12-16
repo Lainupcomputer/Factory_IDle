@@ -1,3 +1,13 @@
 {
-
+  "PLAYER": {
+    "name": "",
+    "playtime": 0
+  },
+  "CURRENCY": {
+    "coins": 0,
+    "gems": 0,
+    "base_income": 0.1,
+    "passive_income": 0,
+    "active_income": 0
+  }
 }
