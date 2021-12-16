@@ -6,7 +6,7 @@ from Resources.Player import Player
 from Resources import screen_objects as sobj
 from Resources.screen_objects import LPanel, RPanel
 from Resources.entitys import worker, opt
-from Resources.entitys import Player as P
+
 
 # Asset Loader
 from Resources.Asset.asset_loader import main_menu_bg, main_options_bg, main_stats_bg
@@ -64,15 +64,10 @@ Spieler = Player()  # Player class
 
 
 
-def quit_no_save():
-    pygame.quit()
-    sys.exit()
 
 
-def quit_save():
-    Spieler.save_game()
-    pygame.quit()
-    sys.exit()
+
+
 
 
 
@@ -228,7 +223,7 @@ def options_menu():
         for event in pygame.event.get():
             if event.type == QUIT:
                 Spieler.save_game()
-                quit_no_save()
+                quit_game()
 
             if event.type == KEYDOWN:  # ESC -> Main Menu
                 if event.key == K_ESCAPE:
@@ -274,10 +269,10 @@ def show_stats():
 
         for event in pygame.event.get():  # Event handler
             if event.type == QUIT:
-                quit_no_save()
+                quit_game()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    menu()
+                    main_menu()
 
         pygame.display.update()
         mainClock.tick(60)
@@ -355,7 +350,7 @@ def game():
         for event in pygame.event.get():
             if event.type == QUIT:
                 Spieler.save_game()
-                quit_no_save()
+                quit_game()
 
             if event.type == KEYDOWN:  # ESC -> Ingame Menu
                 if event.key == K_ESCAPE:
@@ -406,7 +401,7 @@ def ingame_menu():
             if click:
                 # save game & exit
                 print("save")
-                quit_save()
+                quit_game()
         if resume_btn.collidepoint((mx, my)):
             if click:
                 # show stats
@@ -414,12 +409,12 @@ def ingame_menu():
 
         if exit_btn.collidepoint((mx, my)):
             if click:
-                quit_no_save()
+                quit_game()
         click = False
 
         for event in pygame.event.get():  # Event handler
             if event.type == QUIT:
-                quit_no_save()
+                quit_game()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     game()
