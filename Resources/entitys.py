@@ -3,7 +3,9 @@ import pygame
 from Resources.ez_config import ez_config
 
 cfg = ez_config()
-cfg.initialise("options.txt", debug=True)
+cfg.initialise("options.txt", debug=False)
+profile = ez_config()
+profile.initialise("profile.json", debug=False)
 
 #cfg.add("OPTIONS", "bgm#eff")
 
@@ -23,34 +25,35 @@ def get(category, request):  # get data from savegame
 
 
 class Player:
+    # setup defaults
     name = ""
-    money = 0
-    gems = 0
     playtime = 0
+    coins = 0
+    gems = 0
+    # Basic
+    base_income = 1
+
 
     def __init__(self):
-        while True:
-            try:
-                # Load Player Data
-                self.name = get("player", "name")
-                self.money = get("player", "money")
-                self.gems = get("player", "gems")
-                self.playtime = get("player", "playtime")
+        # setup the class
+        p = "PLAYER"
+        try:
+            # if found get values
+            self.name = profile.get(p, "name")
+            self.playtime = profile.get(p, "playtime")
+            self.coins = profile.get(p, "coins")
+            self.gems = profile.get(p, "gems")
 
-            except FileNotFoundError:
-                with open(file_path, "w") as f:
-                    f.write("{\n\n}")
+        except KeyError:
+            # add if not found
+            profile.add(p, "name#playtime#coins#gems")
 
-            except KeyError:
-                with open(file_path, "r") as f:
-                    file = json.load(f)
-                    file[str("player")] = {}
-                    file[str("player")]["name"] = ""
-                    file[str("player")]["money"] = 0
-                    file[str("player")]["gems"] = 0
-                    file[str("player")]["playtime"] = 0
-                    save(file)
-            break
+    def save_game(self):
+        p = "PLAYER"
+        profile.edit(p, "name", self.name)
+        profile.edit(p, "playtime", self.playtime)
+        profile.edit(p, "coins", self.coins)
+        profile.edit(p, "gems", self.gems)
 
 
 class worker:
